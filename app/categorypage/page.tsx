@@ -18,7 +18,10 @@ interface Products{
   discountPercent:number,
   colors:[],
   isNew:boolean,
-  category:string
+  category:string,
+  slug: {
+    current: string; // Define slug.current as a string
+  };
 }
 
 const Page = () => {
@@ -27,7 +30,7 @@ const Page = () => {
 
   useEffect(()=>{
     const fetchData= async ()=>{
-    const products = await client.fetch(`*[_type == 'products'][0..8]`);
+    const products = await client.fetch(`*[_type == 'products']`);
     setData(products)
     };
     fetchData();
@@ -41,7 +44,7 @@ const Page = () => {
 {/* main work */}
         <div className='flex gap-[12px]'>
         <Link href="./" className='hover:text-blue-500'><h1 className='flex'>Home<Image src={"/images/rightArrow.svg"}alt="sign"width={16} height={16}/></h1></Link>
-        <Link href="./categorypage" className='hover:text-blue-500'><h2>Casual</h2></Link>
+        <Link href="/categorypage" className='hover:text-blue-500'><h2>Casual</h2></Link>
         </div>
 
 {/* 2nd */}
@@ -89,20 +92,25 @@ const Page = () => {
 
                 {/* col div */}
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-[12px]'>
-                   {Data.map((product) =>(
-                              <div className="flex flex-col gap-[12px] p-4 " key={product._id}>
-                              <Image src={urlFor(product.image).url()} alt={product.name} width={289} height={298} />
-                              <h4>{product.category}</h4>
-                               <h2>{product.name}</h2>
-                               
-                               <h2>${product.price}</h2>
-                               <h2 className='flex gap-[13px]'><Image src={"/images/star 1.svg"}alt="star"width={104} height={19}/>5.0/5</h2>
-                               <div><Button variant={'apnaStyle'} className='bg-[#f1d2d2] w-[58px] h-[28px] rounded-full'>{product.discountPercent}%</Button></div>
-                              
-                              
-                             </div>
-                             
-                           ))}
+                {Data.map((product) =>(
+           <div className="flex flex-col p-4 " key={product._id}>
+             
+             {product.image &&  (
+           <Image src={urlFor(product.image).url()} alt={product.name} width={289} height={298} />)}
+            <h2 className="font-semibold text-[20px]">{product.name}</h2>
+            
+            <div><h2 className="font-bold">${product.price}</h2><h3  className="bg-[#f1d2d2] w-[58px] h-[28px] rounded-full pl-[10px]">{product.discountPercent}%</h3></div>
+            <h2 className='flex gap-[13px]'><Image src={"/images/star 1.svg"}alt="star"width={104} height={19}/>5.0/5</h2>
+           
+            <Link href={`/product/${product.slug.current}`}>
+            <div className="flex justify-center items-center w-[150px] h-[50px] border-[1px] border-[#000000] mt-[12px] rounded-3xl bg-[#000000] text-[#FFFFFF] hover:bg-[#f1d2d2]">View More</div></Link>
+            
+           
+           
+          </div>
+          
+        ))}
+                           
                  </div>
         {/* 2nd */}
         <div className='flex gap-[32px] md:gap-[500px] mt-[24px]'>

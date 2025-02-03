@@ -5,14 +5,35 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useCart } from "@/app/context/CartContext";
-import { useState,useEffect } from 'react';
+import { useState,useEffect } from 'react'
+import Select from "@/app/components/Select"
 
+
+
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  size: string;
+  discountPercent: number;
+  colors: string[];
+  isNew: boolean;
+  category: string;
+  slug: string;
+  quantity?: number;
+}
 
 
 export default function Page({params:{slug}}:{params:{slug:string}}){
-const [product, setProduct] = useState<any>(null); // Initialize state to store product
-const { addToCart ,removeFromCart } = useCart(); 
+const [product, setProduct] = useState<Product | null>(null); // Initialize state to store product
+const {addToCart}  = useCart(); 
  const [selectedSize, setSelectedSize] = useState('');
+ const [selectedColor, setSelectedColor] = useState('');
+
+
+
 
  
 
@@ -24,6 +45,7 @@ useEffect(() => {
             image,
             colors,
             size,
+            price,
             "slug":slug.current
         }`,
     {slug});
@@ -37,19 +59,20 @@ useEffect(() => {
         return <div>Product not found</div>; // Handle missing product gracefully
       }
     console.log(product)
+    
+      const handleAddToCart = () => {
+        addToCart(product, selectedColor, selectedSize); // Add product to cart with selected options
+        // Optional: Show a success message or redirect after adding to cart
+        // Navigate to cart page (optional)
+      };
+      
+     const handleSizeSelect =(size:string) => {
+      setSelectedSize(size);
+      alert(`you selected:${size}`);
+     }
 
-    const handleAddToCart = () => {
-        addToCart(product); // Correctly passing the product to addToCart
-        alert(`${product.name} added to cart`);
-      }
-      const handleRemoveFromCart = () => {
-        removeFromCart(product); // Removes the product from the cart
-        alert(`${product.name} removed from cart`);
-      };
-      const handleSizeSelect = (size:any) => {
-        setSelectedSize(size); // Update the selected size
-        alert(`You selected: ${size}`); // Optional feedback
-      };
+     
+      
         
 return(
     <div>
@@ -73,67 +96,65 @@ return(
                     
                       
                     <div className='flex flex-col gap-[10px]'>
-                         <Image src={urlFor(product.image).url()} alt={product.name} width={152} height={168} /> <Image src={urlFor(product.image).url()} alt={product.name} width={152} height={168} /> <Image src={urlFor(product.image).url()} alt={product.name} width={152} height={167} />
+                         <Image className='rounded-xl' src={urlFor(product.image).url()} alt={product.name} width={152} height={168} /> <Image className='rounded-xl' src={urlFor(product.image).url()} alt={product.name} width={152} height={168} /> <Image className='rounded-xl' src={urlFor(product.image).url()} alt={product.name} width={152} height={167} />
                     </div>
 
 
-                    <div className='w-[152px] md:w-[444px]'> <Image src={urlFor(product.image).url()} alt={product.name} width={444} height={520} /></div>
+                    <div className='w-[152px] md:w-[600px]'> <Image className='rounded-2xl border-[#000000] border-[1px]' src={urlFor(product.image).url()} alt={product.name} width={444} height={520} /></div>
                        
                      </div>
                      
                     
                     
                {/* right side */}
-                <div className='flex flex-col justify-center items-center gap-[20px]'>
+                <div className='flex flex-col justify-center items-center'>
                     <h1 className='font-medium md:font-semibold text-[20px] md:text-[40px] text-center'>{product.name}</h1>
                     <h2 className='flex gap-[12px]'><Image src={"/images/star 1.svg"}alt="sign"width={139} height={24}/>4.5/5</h2>
+                    <h4 className='font-bold text-[32px]'>${product.price}</h4>
                     <h3 className='flex justify-center items-center text-center p-[50px]'>{product.description}</h3>
-                    <h4>Select Colors</h4>
-                    <h5><Image src={"/images/threebuttons.svg"}alt="sign"width={143} height={37}/></h5>
+                    
+                    <h4 className='font-bold text-[24px]'>Select Colors</h4>
+                    <div className="flex gap-4 mt-2">
+                    {product.colors.map((color) => (
+                <button
+                  key={color}
+                  onClick={() => setSelectedColor(color)}
+                  className={`w-8 h-8 rounded-full border-2 ${selectedColor === color ? 'border-black' : 'border-gray-300'}`}
+                  style={{ backgroundColor: color }}
+                />
+              ))}
+</div>
+
+{selectedColor && <p className="mt-4">Selected Color: {selectedColor}</p>}
+
+
+
                                         <h6 className='border-[1px] border-[#cac7c7] w-auto'></h6>
 
                     <h6 className='border-[1px] border-[#cac7c7]'></h6>
 
 
-                    <h1>Choose Size</h1>
+                    <h1 className='font-bold text-[24px]'>Choose Size</h1>
                     
               <div className='flex gap-4'>          
-             <Button
-          variant="apnaStyle"
-          className={`rounded-full ${selectedSize === 'Small' ? 'bg-[#cccccc]' : 'bg-[#e4e3e3]'}`}
-          onClick={() => handleSizeSelect('Small')}
-        >
-          Small
-        </Button>
-        <Button
-          variant="apnaStyle"
-          className={`rounded-full ${selectedSize === 'Medium' ? 'bg-[#cccccc]' : 'bg-[#e9e7e7]'}`}
-          onClick={() => handleSizeSelect('Medium')}
-        >
-          Medium
-        </Button>
-        <Button
-          variant="apnaStyle"
-          className={`rounded-full ${selectedSize === 'Large' ? 'bg-[#333333] text-white' : 'bg-[#000000] text-[#FFFFFF]'}`}
-          onClick={() => handleSizeSelect('Large')}
-        >
-          Large
-        </Button>
-        <Button
-          variant="apnaStyle"
-          className={`rounded-full ${selectedSize === 'x-Large' ? 'bg-[#cccccc]' : 'bg-[#eaeaea]'}`}
-          onClick={() => handleSizeSelect('x-Large')}
-        >
-          x-Large
-        </Button>
-      
-      {selectedSize && <p className="mt-4">Selected Size: {selectedSize}</p>}
-      
-        </div>
+              {["Small", "Medium", "Large", "x-Large"].map((size) => (
+                <Button
+                  key={size}
+                  variant="apnaStyle"
+                  className={`rounded-full ${selectedSize === size ? 'bg-[#cccccc]' : 'bg-[#e4e3e3]'}`}
+                  onClick={() => handleSizeSelect(size)}
+                >
+                  {size}
+                </Button>
+              ))}
+            </div>
+            {selectedSize && <p className="mt-4">Selected Size: {selectedSize}</p>}
+
+        
                   
+           
 
-
-                    <h3><Button variant={'apnaStyle'} className='w-[170px] h-[52px] bg-[#e4e3e3] rounded-full'>+  1  -</Button></h3>
+                   
 
                     <div className='flex gap-2 mt-3'>
             <button
@@ -142,13 +163,6 @@ return(
             >
               Add to Cart
             </button>
-
-            <button
-          onClick={handleRemoveFromCart}
-          className="bg-red-500 text-white py-1 px-3 rounded"
-        >
-          Remove
-        </button>
           </div>
 
                     
@@ -258,88 +272,7 @@ return(
             {/* col div end */}
      
 
-            <div className='flex flex-col justify-center items-center'>
-
-                <div className='font-extrabold text-[24px] md:text-[48px]'>YOU MIGHT ALSO LIKE</div>
-         {/* col div */}
-                <div className='grid grid-cols-1 md:grid-cols-4 gap-[12px]'>
-                    {/* 1st col */}
-            <div className='flex flex-col gap-[20px]'> 
-            {/* img div */}
-            <div className='mt-[32px]'>
-            <Image src={"/images/Contrast shirt.svg"}alt="shirt"width={295} height={298}/>
-            </div>
-            {/* text div */}
-            <div className='gap-[20px]'> 
-                <h1 className='font-bold'>{product.name}</h1>
-                <h2 className='flex gap-[13px]'><Image src={"/images/star 1.svg"}alt="star"width={104} height={19}/>4.0/5</h2>
-                <div className='flex font-bold text-[24px] gap-[16px]'><h1>$212</h1><h2>$242</h2>
-                <Button variant={'apnaStyle'} className='bg-[#f1d2d2] w-[58px] h-[28px] rounded-full'>-20%</Button></div>
-            </div>
-            </div>
-            {/* 1st col end */}
-
-
-            {/* 2nd col */}
-            <div className='flex flex-col gap-[20px]'> 
-            {/* img div */}
-            <div className='mt-[32px]'>
-            <Image src={"/images/GradientT-shirt.svg"}alt="shirt"width={295} height={298}/>
-            </div>
-            {/* text div */}
-            <div className='gap-[20px]'> 
-                <h1 className='font-bold'>Gradient Graphic T-shirt</h1>
-                <h2 className='flex gap-[13px]'><Image src={"/images/star 1.svg"}alt="star"width={104} height={19}/>3.5/5</h2>
-                <h3 className='font-bold text-[24px]'>$145</h3>
-                
-            </div>
-            </div>
-           {/* 2nd col end */}
-            
-            {/* 3rd col */}
-            <div className='flex flex-col gap-[20px]'> 
-            {/* img div */}
-            <div className='mt-[32px]'>
-            <Image src={"/images/Tippingshirt.svg"}alt="shirt"width={295} height={298}/>
-            </div>
-            {/* text div */}
-            <div className='gap-[20px]'> 
-                <h1 className='font-bold'>Polo with Tipping Details</h1>
-                <h2 className='flex gap-[13px]'><Image src={"/images/star 1.svg"}alt="star"width={104} height={19}/>4.5/5</h2>
-                <h3 className='font-bold text-[24px]'>$180</h3>
-                
-            </div>
-            </div>
-            {/* 3rd col end */}
-
-            {/* 4th col */}
-            <div className='flex flex-col gap-[20px]'> 
-            {/* img div */}
-            <div className='mt-[32px]'>
-            <Image src={"/images/Blackshirt.svg"}alt="shirt"width={295} height={298}/>
-            </div>
-            {/* text div */}
-            <div className='gap-[20px]'> 
-                <h1 className='font-bold'>Black Striped T-shirt</h1>
-                <h2 className='flex gap-[13px]'><Image src={"/images/star 1.svg"}alt="star"width={104} height={19}/>5.0/5</h2>
-                <div className='flex font-bold text-[24px] gap-[16px]'><h1>$120</h1><h2>$150</h2>
-                <Button variant={'apnaStyle'} className='bg-[#f1d2d2] w-[58px] h-[28px] rounded-full'>-30%</Button></div>
-            </div>
-            </div>
-            {/* 4th col end */}
-
-
-
-
-                    
-                </div>
-                {/* col end */}
-                
-
-</div>
-            
-
-        
+          <Select/>
         
 
         

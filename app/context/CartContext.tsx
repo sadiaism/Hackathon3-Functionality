@@ -1,10 +1,27 @@
 "use client";
+
 import { createContext, useContext, useState, ReactNode } from "react";
+
+
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  size: string;
+  discountPercent: number;
+  colors: string[];
+  isNew: boolean;
+  category: string;
+  slug: string;
+  quantity?: number;
+}
 
 // Define the shape of a cart item
 interface CartItem {
-  id: string;
-  heading: string;
+  _id: string;
+  name: string;
   price: number;
   image: string;
   quantity: number;
@@ -14,9 +31,10 @@ interface CartItem {
 
 // Define the context data
 interface CartContextType {
-  cart: CartItem[];
-  addToCart: (item: CartItem) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  cartItems: CartItem[];
+  addToCart: (product: Product, selectedColor: string, selectedSize: string) => void;
+  increaseQuantity:(id:string) => void;
+  decreaseQuantity:(id:string) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
 }
@@ -32,36 +50,57 @@ export const useCart = () => {
 
 // CartProvider to wrap the app
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const addToCart = (item: CartItem) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((i) => i.id === item.id);
+  // Function to add product to cart
+  const addToCart = (product: Product, selectedColor: string, selectedSize: string) => {
+    setCartItems((prevCart) => {
+      const existingItem = prevCart.find((item) => item._id === product._id);
+
       if (existingItem) {
-        return prevCart.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
+        return prevCart.map((item) =>
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
+      } else {
+        return [
+          ...prevCart,
+          { ...product, quantity: 1, selectedColor, selectedSize },
+        ];
       }
-      return [...prevCart, item];
     });
+    alert(`${product.name} has been added to your cart.`);
   };
 
-  const updateQuantity = (id: string, quantity: number) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
-      )
-    );
+
+  const increaseQuantity = (id:string) => {
+    setCartItems((prevCart) => 
+    prevCart.map((cartItem) =>
+    cartItem._id === id
+  ? {...cartItem, quantity: cartItem.quantity + 1 }
+  :cartItem
+))
   };
+
+  const decreaseQuantity = (id:string) => {
+    setCartItems((prevCart) => 
+    prevCart.map((cartItem) =>
+    cartItem._id === id && cartItem.quantity > 1 
+  ? {...cartItem, quantity: cartItem.quantity - 1}
+   : cartItem 
+  ))
+  }
+
 
   const removeFromCart = (id: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+    setCartItems((prevCart) => prevCart.filter((item) => item._id !== id));
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => setCartItems([]);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, updateQuantity, removeFromCart, clearCart }}>
+    <CartContext.Provider value={{ cartItems,addToCart,increaseQuantity,decreaseQuantity, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
