@@ -3,6 +3,8 @@ import { useCart } from "../context/CartContext";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { client } from "@/sanity/lib/client";
+import { FaFileZipper } from "react-icons/fa6";
 
 // Define a type for formValues
 interface FormValues {
@@ -41,7 +43,38 @@ const Checkout = () => {
   };
 
   // Dummy Place Order Function
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async() => {
+
+    const orderData = {
+      _type:'order',
+      firstName:formValues.firstName,
+      lastName:formValues.lastName,
+      email:formValues.email,
+      phone:formValues.phone,
+      address:formValues.address,
+      zipCode:formValues.zipCode,
+      city:formValues.city,
+
+      cartItems: cartItems
+  .filter(item => item._id) // Ensure no undefined items
+  .map(item => ({
+    _type: 'reference',
+    _ref: String(item._id), // Convert to string (if necessary)
+  })),
+      total:total,
+      discount:discount,
+      status: 'pending',
+      orderDate: new Date().toISOString()
+    };
+    try {
+      await client.create(orderData)
+      localStorage.removeItem("appliedDiscount")
+    }catch(error) {
+      console.error("error creating order", error)
+    }
+
+    console.log("Cart Items in Checkout:", cartItems);
+
     alert("Order Placed Successfully!");
   };
 

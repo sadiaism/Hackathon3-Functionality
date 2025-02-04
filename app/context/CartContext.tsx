@@ -54,12 +54,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to add product to cart
   const addToCart = (product: Product, selectedColor: string, selectedSize: string) => {
+    console.log("Adding product to cart:", product);
+    
+    
+
     setCartItems((prevCart) => {
-      const existingItem = prevCart.find((item) => item._id === product._id);
+      const existingItem = prevCart.find((item) => item._id === product._id  && item.selectedColor === selectedColor && item.selectedSize === selectedSize);
 
       if (existingItem) {
         return prevCart.map((item) =>
-          item._id === product._id
+          item._id === product._id && item.selectedColor === selectedColor && item.selectedSize === selectedSize
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );

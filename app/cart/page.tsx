@@ -29,12 +29,12 @@ interface Product {
 const Page = () => {
   const { cartItems,increaseQuantity,decreaseQuantity,removeFromCart } = useCart();
   const router = useRouter(); 
-  const [products, setProducts] = useState<Product |null>(null);
+  const [products, setProducts] = useState<Product[] |null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data: Product = await client.fetch(`*[_type == "products"] {
+        const data: Product[] = await client.fetch(`*[_type == "products"] {
             _id, name, description, price, image, size, discountPercent, colors, isNew, category, "slug": slug.current
           }`);
         setProducts(data);

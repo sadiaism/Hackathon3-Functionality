@@ -50,6 +50,7 @@ useEffect(() => {
         }`,
     {slug});
     setProduct(fetchedProduct)
+    console.log("Fetched Products from Sanity:", product); 
       }
 
       fetchProduct();
@@ -64,6 +65,7 @@ useEffect(() => {
         addToCart(product, selectedColor, selectedSize); // Add product to cart with selected options
         // Optional: Show a success message or redirect after adding to cart
         // Navigate to cart page (optional)
+        alert(`${product.name} has been added to your cart.`);
       };
       
      const handleSizeSelect =(size:string) => {
@@ -108,6 +110,7 @@ return(
                     
                {/* right side */}
                 <div className='flex flex-col justify-center items-center'>
+                  
                     <h1 className='font-medium md:font-semibold text-[20px] md:text-[40px] text-center'>{product.name}</h1>
                     <h2 className='flex gap-[12px]'><Image src={"/images/star 1.svg"}alt="sign"width={139} height={24}/>4.5/5</h2>
                     <h4 className='font-bold text-[32px]'>${product.price}</h4>
