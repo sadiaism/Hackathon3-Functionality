@@ -88,7 +88,7 @@ const Page = () => {
               {cartItems.map((item) => (
                 
                 <div
-                  key={item._id}
+                  key={item._id + item.selectedColor + item.selectedSize}
                   className="flex items-center gap-4 border p-4 rounded-lg"
                 >
                   <Image

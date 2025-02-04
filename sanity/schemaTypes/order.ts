@@ -29,7 +29,7 @@ export default {
             type:'string'
         },
         {
-            name:'zipcode',
+            name:'zipCode',
             title:'Zip Code',
             type:'string'
         },

@@ -55,11 +55,9 @@ const Checkout = () => {
       zipCode:formValues.zipCode,
       city:formValues.city,
 
-      cartItems: cartItems
-  .filter(item => item._id) // Ensure no undefined items
-  .map(item => ({
+      cartItems: cartItems.map(item => ({
     _type: 'reference',
-    _ref: String(item._id), // Convert to string (if necessary)
+    _ref: item._id, // Convert to string (if necessary)
   })),
       total:total,
       discount:discount,
@@ -68,6 +66,7 @@ const Checkout = () => {
     };
     try {
       await client.create(orderData)
+      console.log("Order successfully saved in Sanity!");
       localStorage.removeItem("appliedDiscount")
     }catch(error) {
       console.error("error creating order", error)

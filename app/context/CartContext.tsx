@@ -55,11 +55,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   // Function to add product to cart
   const addToCart = (product: Product, selectedColor: string, selectedSize: string) => {
     console.log("Adding product to cart:", product);
-    
+
+    if (!product._id) {
+      console.error("Error: Product _id is missing!", product);
+      alert("Error: Cannot add this product to cart. Please try again.");
+      return;
+    }
     
 
     setCartItems((prevCart) => {
-      const existingItem = prevCart.find((item) => item._id === product._id  && item.selectedColor === selectedColor && item.selectedSize === selectedSize);
+      const existingItem = prevCart.find((item) => item._id === product._id && item.selectedColor === selectedColor && item.selectedSize === selectedSize);
 
       if (existingItem) {
         return prevCart.map((item) =>
@@ -70,7 +75,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       } else {
         return [
           ...prevCart,
-          { ...product, quantity: 1, selectedColor, selectedSize },
+          { _id: product._id, // Ensure _id is always present
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: 1,
+            selectedColor,
+            selectedSize,
+
+          },
         ];
       }
     });

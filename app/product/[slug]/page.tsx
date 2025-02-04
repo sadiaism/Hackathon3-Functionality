@@ -40,6 +40,7 @@ const {addToCart}  = useCart();
 useEffect(() => {
     async function fetchProduct() {
       const fetchedProduct = await client.fetch(`*[_type == "products" && slug.current == $slug][0]{
+            _id,
             name,
             description,
             image,
@@ -50,7 +51,7 @@ useEffect(() => {
         }`,
     {slug});
     setProduct(fetchedProduct)
-    console.log("Fetched Products from Sanity:", product); 
+    console.log("Fetched Product from Sanity:", fetchedProduct); 
       }
 
       fetchProduct();
@@ -97,7 +98,7 @@ return(
                     {/* div */}
                     
                       
-                    <div className='flex flex-col gap-[10px]'>
+                    <div key={product._id} className='flex flex-col gap-[10px]'>
                          <Image className='rounded-xl' src={urlFor(product.image).url()} alt={product.name} width={152} height={168} /> <Image className='rounded-xl' src={urlFor(product.image).url()} alt={product.name} width={152} height={168} /> <Image className='rounded-xl' src={urlFor(product.image).url()} alt={product.name} width={152} height={167} />
                     </div>
 
@@ -114,6 +115,7 @@ return(
                     <h1 className='font-medium md:font-semibold text-[20px] md:text-[40px] text-center'>{product.name}</h1>
                     <h2 className='flex gap-[12px]'><Image src={"/images/star 1.svg"}alt="sign"width={139} height={24}/>4.5/5</h2>
                     <h4 className='font-bold text-[32px]'>${product.price}</h4>
+                
                     <h3 className='flex justify-center items-center text-center p-[50px]'>{product.description}</h3>
                     
                     <h4 className='font-bold text-[24px]'>Select Colors</h4>
