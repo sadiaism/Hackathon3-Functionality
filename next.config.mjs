@@ -1,13 +1,9 @@
 /** @type {import('next').NextConfig} */
 
-module.exports = {
-    experimental: {
-      appDir: true
-    }
-  }
-  
-
 const nextConfig = {
+    experimental: {
+        appDir: true
+    },
   images:{
       remotePatterns:[
           {
