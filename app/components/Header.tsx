@@ -113,14 +113,17 @@ const Header = () => {
               {cartItems.length}
             </span>
           )}</Link>
-          <Link href="./sign-up">
+
+         
+          {/*<Link href="./sign-up">
             <Image
               src={"/images/email icon.svg"}
               alt="icon"
               width={24}
               height={24}
             />
-          </Link>
+          </Link>*/}
+
         </div>
       </div>
       {/* nav end */}

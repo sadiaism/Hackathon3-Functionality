@@ -5,8 +5,10 @@ import Link from 'next/link'
 
 
 const page = () => {
+  
   return (
-    <div className='flex flex-col'>
+    
+  <div className='flex flex-col'>
 
 <div className='flex  justify-center items-center mt-[100px]'>
                 <Link href="/" className="hover:text-blue-500"><h1 className='flex text-[24px] font-medium'>Home<Image src={"/images/rightArrow.svg"}alt="sign"width={16} height={16}/></h1></Link>
@@ -37,27 +39,10 @@ const page = () => {
             </div>
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+             
         </div>
       
-    
-    
-    
-    
-    
-    
-
-      
-    
+   
   )
 }
 

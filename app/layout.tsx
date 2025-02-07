@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { CartProvider } from "./context/CartContext";
+import ClerkProviderWrapper from "./providers/ClerkProviderWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,16 +28,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      > 
+      >
+       
+
+      <ClerkProviderWrapper>
       <CartProvider>
       <Header/>
         {children}
         <Footer/>
-        </CartProvider>
+      </CartProvider>
+      </ClerkProviderWrapper>
       </body>
     </html>
+    
   );
 }
