@@ -4,7 +4,8 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { CartProvider } from "./context/CartContext";
-import ClerkProviderWrapper from "./providers/ClerkProviderWrapper";
+import {ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton} from '@clerk/nextjs'
+// import ClerkProviderWrapper from "./providers/ClerkProviderWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,22 +29,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    
+    <ClerkProvider>
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
        
 
-      <ClerkProviderWrapper>
+      
       <CartProvider>
       <Header/>
         {children}
         <Footer/>
       </CartProvider>
-      </ClerkProviderWrapper>
+      
       </body>
     </html>
-    
+    </ClerkProvider>
   );
 }
