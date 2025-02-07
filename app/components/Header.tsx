@@ -8,7 +8,14 @@ import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { useCart } from "../context/CartContext";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa6";
+import dynamic from "next/dynamic";
 
+const DynamicSignedIn = dynamic(() => import("@clerk/nextjs").then((mod) => mod.SignedIn), { ssr: false });
+const DynamicSignedOut = dynamic(() => import("@clerk/nextjs").then((mod) => mod.SignedOut), { ssr: false });
+const DynamicSignInButton = dynamic(() => import("@clerk/nextjs").then((mod) => mod.SignInButton), { ssr: false });
+const DynamicUserButton = dynamic(() => import("@clerk/nextjs").then((mod) => mod.UserButton), { ssr: false });
+
+ 
 
 
 
@@ -115,6 +122,21 @@ const Header = () => {
               {cartItems.length}
             </span>
           )}</Link>
+          </div>
+
+
+
+        <DynamicSignedOut>
+          <DynamicSignInButton />
+        </DynamicSignedOut>
+        <DynamicSignedIn>
+          <DynamicUserButton />
+        </DynamicSignedIn>
+      
+
+
+
+
 
           {/*<Link href="./sign-up">
             <Image
@@ -125,7 +147,7 @@ const Header = () => {
             />
           </Link>*/}
 
-        </div>
+       
       </div>
       {/* nav end */}
 

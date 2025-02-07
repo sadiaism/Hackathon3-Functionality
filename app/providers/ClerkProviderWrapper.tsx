@@ -30,3 +30,7 @@ const ClerkProviderWrapper = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default ClerkProviderWrapper;
+
+
+
+
