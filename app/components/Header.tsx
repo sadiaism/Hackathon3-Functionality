@@ -10,6 +10,8 @@ import { FiShoppingCart } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa6";
 
 
+
+
 const Header = () => {
   const { cartItems } = useCart();
  
@@ -114,7 +116,6 @@ const Header = () => {
             </span>
           )}</Link>
 
-         
           {/*<Link href="./sign-up">
             <Image
               src={"/images/email icon.svg"}
