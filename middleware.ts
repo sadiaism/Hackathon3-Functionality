@@ -1,6 +1,13 @@
 import { authMiddleware } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
 
-export default  authMiddleware  ();
+export default process.env.NODE_ENV === "development"
+  ? authMiddleware()
+  : function middleware() {
+      return NextResponse.next(); // ✅ Vercel mein middleware disable
+    };
+
+
 
 export const config = {
   matcher: [
@@ -9,5 +16,5 @@ export const config = {
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
-  runtime: "nodejs", 
+ 
 };
