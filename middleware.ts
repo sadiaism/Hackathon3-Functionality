@@ -1,11 +1,10 @@
 import { authMiddleware } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
 
-export default process.env.NODE_ENV === "development"
-  ? authMiddleware()
-  : function middleware() {
-      return NextResponse.next(); // ✅ Vercel mein middleware disable
-    };
+
+export default authMiddleware({
+  publicRoutes: ["/"],  // 👈 Yeh `/` route ko public bana dega
+});
+
 
 
 
